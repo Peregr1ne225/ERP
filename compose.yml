@@ -1,0 +1,57 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: django_backend_dev
+    env_file: .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+      # Overrides or container-specific settings can stay here
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - PYTHONUNBUFFERED=1
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./backend:/app # Hot reloading
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: nextjs_frontend_dev
+    env_file: .env
+    volumes:
+      - ./frontend:/app # Hot reloading
+      - /app/node_modules # Prevent host node_modules clashing
+      - /app/.next # Persist build cache
+    environment:
+      #- WATCHPACK_POLLING=true
+      - INTERNAL_API_URL=http://backend:8000/api/v1
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1 # Browser accesses backend locally
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    env_file: .env
+    # environment: (No specific overrides needed if .env has POSTGRES_ vars)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres_data:
