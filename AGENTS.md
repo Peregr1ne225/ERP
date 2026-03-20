@@ -22,31 +22,31 @@ This is a modern web application consisting of a decoupled backend and frontend.
 
 ## 2. Build, Lint, and Test Commands
 
-### Backend Commands
-- **Install Dependencies**: `uv sync`
-- **Run Development Server**: `uv run python manage.py runserver 0.0.0.0:8000`
-- **Database Migrations**: `uv run python manage.py migrate`
-- **Make Migrations**: `uv run python manage.py makemigrations`
-- **Linting**: We recommend using Ruff. Run `uv run ruff check .`
-- **Formatting**: `uv run ruff format .`
-- **Run All Tests**: `uv run python manage.py test`
+All commands should be executed via Docker to ensure parity with the containerized environment. Ensure the stack is running first using `docker compose up --build -d`.
+
+### Docker Stack Management
+- **Start the stack**: `docker compose up --build -d`
+- **Stop the stack**: `docker compose down`
+- **View logs**: `docker compose logs -f`
+
+### Backend Commands (run via Docker)
+- **Install Dependencies**: `docker compose exec backend uv sync`
+- **Database Migrations**: `docker compose exec backend uv run python manage.py migrate`
+- **Make Migrations**: `docker compose exec backend uv run python manage.py makemigrations`
+- **Linting**: We recommend using Ruff. Run `docker compose exec backend uv run ruff check .`
+- **Formatting**: `docker compose exec backend uv run ruff format .`
+- **Run All Tests**: `docker compose exec backend uv run python manage.py test`
 - **Run a Single Test**: 
-  - To test a specific class: `uv run python manage.py test path.to.app.tests.test_module.TestClass`
-  - To test a specific method: `uv run python manage.py test path.to.app.tests.test_module.TestClass.test_method`
+  - To test a specific class: `docker compose exec backend uv run python manage.py test path.to.app.tests.test_module.TestClass`
+  - To test a specific method: `docker compose exec backend uv run python manage.py test path.to.app.tests.test_module.TestClass.test_method`
 
-### Frontend Commands
-- **Install Dependencies**: `bun install`
-- **Run Development Server**: `bun run dev`
-- **Build Production**: `bun run build`
-- **Linting**: `bun run lint`
-- **Run All Tests**: `bun test`
-- **Run a Single Test**: `bun test path/to/test/file.test.ts`
-- **Run Test in Watch Mode**: `bun test --watch path/to/test/file.test.ts`
-
-### Docker Development
-You can spin up the full stack using Docker. Always ensure your changes are compatible with the containerized environment.
-- `docker compose up --build -d`
-- `docker compose down`
+### Frontend Commands (run via Docker)
+- **Install Dependencies**: `docker compose exec frontend bun install`
+- **Build Production**: `docker compose exec frontend bun run build`
+- **Linting**: `docker compose exec frontend bun run lint`
+- **Run All Tests**: `docker compose exec frontend bun test`
+- **Run a Single Test**: `docker compose exec frontend bun test path/to/test/file.test.ts`
+- **Run Test in Watch Mode**: `docker compose exec frontend bun test --watch path/to/test/file.test.ts`
 
 ---
 
