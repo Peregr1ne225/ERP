@@ -1,0 +1,60 @@
+# Ignore the local virtual environment (Crucial!)
+.venv/
+venv/
+
+# Ignore git history and metadata
+.git/
+.gitignore
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local configuration/Secrets
+.env
+.env.local
+
+# Local database (since we use Postgres in Docker)
+db.sqlite3
+
+# Docker metadata
+Dockerfile
+# Docker metadata
+Dockerfile.dev
+Dockerfile.prod
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Generated static and media files
+staticfiles/
+media/
+
+# Test and Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Documentation
+README.md
