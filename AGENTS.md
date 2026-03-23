@@ -12,6 +12,7 @@ ERP/
 ├── backend/
 │   ├── apps/
 │   │   ├── inventory/   # Handles DropsdownList, Product, PriceHistory, Ledgers
+│   │   ├── kpi/         # Mktg & E-com analytics (Campaigns, Ads, Conversions)
 │   │   └── project/     # HR & PM system (Employee, AttendanceLog, Project, Task)
 │   ├── config/          # Core settings, WSGI, ASGI, and root urls.py
 │   └── manage.py
