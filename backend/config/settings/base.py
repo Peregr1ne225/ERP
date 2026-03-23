@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     # # Local apps
+    "apps.inventory",
     # "apps.products",
     # "apps.catalog",
     # "apps.authentication",
