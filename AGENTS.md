@@ -27,14 +27,18 @@ All commands should be executed via Docker to ensure parity with the containeriz
 ### Docker Stack Management
 - **Start the stack**: `docker compose up --build -d`
 - **Stop the stack**: `docker compose down`
+- **Restart a service**: `docker compose restart backend` (useful if you modify configuration files or install new packages and they aren't immediately recognized)
 - **View logs**: `docker compose logs -f`
+- **View specific logs**: `docker compose logs -f backend`
 
 ### Backend Commands (run via Docker)
 - **Install Dependencies**: `docker compose exec backend uv sync`
 - **Database Migrations**: `docker compose exec backend uv run python manage.py migrate`
 - **Make Migrations**: `docker compose exec backend uv run python manage.py makemigrations`
+- **Create Superuser**: `docker compose exec backend uv run python manage.py createsuperuser`
 - **Linting**: We recommend using Ruff. Run `docker compose exec backend uv run ruff check .`
 - **Formatting**: `docker compose exec backend uv run ruff format .`
+- **Type Checking**: We use `mypy` with `django-stubs` and `djangorestframework-stubs`. Run `docker compose exec backend uv run mypy . --explicit-package-bases`
 - **Run All Tests**: `docker compose exec backend uv run python manage.py test`
 - **Run a Single Test**: 
   - To test a specific class: `docker compose exec backend uv run python manage.py test path.to.app.tests.test_module.TestClass`
@@ -103,7 +107,13 @@ All commands should be executed via Docker to ensure parity with the containeriz
 - Validate all user input on the backend using DRF serializers. Trust no client input.
 - Protect against SQL Injection (use Django ORM appropriately) and XSS (React handles this automatically, but be extremely careful with `dangerouslySetInnerHTML`).
 
-### G. Code Review Checklist for Agents
+### H. Business Logic & Conventions
+- **Django Signals**: Business logic such as calculating total inventory stock is handled via Django signals (e.g., `post_save`). Avoid writing raw SQL or overriding `save()` methods unless necessary; use signals to keep models decoupled and automate recalculations based on ledger entries.
+- **Read-Only API Fields**: Fields that are automated or calculated (like `CurrentInventory.current_stock`) MUST be marked as `read_only=True` in serializers to prevent manual override from the API.
+- **Foreign Keys in __str__**: When defining string representation `__str__` for models with ForeignKeys, prefer using the `_id` suffix (e.g., `self.sku_id` instead of `self.sku.sku_id`) to avoid N+1 queries when evaluating string representations. Type checkers might need configuration or ignores for dynamic `_id` fields, but performance is prioritized.
+- **Authentication**: Endpoints modifying state (POST/PUT/PATCH/DELETE) should generally be secured. By default, DRF is configured with `IsAuthenticatedOrReadOnly`. When creating new ViewSets, if you intend to bypass this, explicitly set `permission_classes = [permissions.AllowAny]`.
+
+### I. Code Review Checklist for Agents
 - Are there tests for this logic?
 - Are imports properly ordered?
 - Have type hints/TypeScript interfaces been fully provided?
