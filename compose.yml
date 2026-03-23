@@ -19,11 +19,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 8000 || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   frontend:
     build:
@@ -43,7 +38,7 @@ services:
       - "3000:3000"
     depends_on:
       backend:
-        condition: service_healthy
+        condition: service_started
 
   db:
     image: postgres:15-alpine

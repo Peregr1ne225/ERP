@@ -23,6 +23,8 @@ local_settings.py
 plans/
 staticfiles/
 media/
+.ruff_cache/
+.mypy_cache/
 
 # Frontend (Next.js / Node)
 node_modules/
