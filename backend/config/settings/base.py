@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # # Local apps
     "apps.inventory",
+    "apps.project",
     # "apps.products",
     # "apps.catalog",
     # "apps.authentication",
