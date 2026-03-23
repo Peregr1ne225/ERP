@@ -6,6 +6,20 @@ Welcome to the ERP project. This document outlines the build/lint/test commands,
 
 This is a modern web application consisting of a decoupled backend and frontend. Agents must respect this separation of concerns.
 
+### Project Structure (ERP System)
+```text
+ERP/
+├── backend/
+│   ├── apps/
+│   │   ├── inventory/   # Handles DropsdownList, Product, PriceHistory, Ledgers
+│   │   └── project/     # HR & PM system (Employee, AttendanceLog, Project, Task)
+│   ├── config/          # Core settings, WSGI, ASGI, and root urls.py
+│   └── manage.py
+├── frontend/            # Next.js 16.2.0 UI (React 19, TypeScript, Tailwind)
+├── compose.yml          # Docker composition orchestrating the entire stack
+└── AGENTS.md            # This instruction file
+```
+
 ### Backend
 - **Framework**: Django, Django Rest Framework (DRF)
 - **Language**: Python 3.12
@@ -109,7 +123,9 @@ All commands should be executed via Docker to ensure parity with the containeriz
 
 ### H. Business Logic & Conventions
 - **Django Signals**: Business logic such as calculating total inventory stock is handled via Django signals (e.g., `post_save`). Avoid writing raw SQL or overriding `save()` methods unless necessary; use signals to keep models decoupled and automate recalculations based on ledger entries.
-- **Read-Only API Fields**: Fields that are automated or calculated (like `CurrentInventory.current_stock`) MUST be marked as `read_only=True` in serializers to prevent manual override from the API.
+- **Calculated Properties**: Use the `@property` decorator on Django models for complex calculations (e.g., task completion percentage, lateness). 
+- **Read-Only API Fields**: Fields that are automated or calculated via `@property` MUST be explicitly added to serializers with `read_only=True` (e.g., `percent = serializers.FloatField(read_only=True)`).
+- **Filtering Computed Properties**: When creating custom DRF `@action` endpoints that filter based on a `@property` (which cannot be queried directly via the ORM), execute the logic in Python on the `get_queryset()` list (e.g., `[task for task in tasks if task.is_late]`), balancing logic parity against dataset size.
 - **Foreign Keys in __str__**: When defining string representation `__str__` for models with ForeignKeys, prefer using the `_id` suffix (e.g., `self.sku_id` instead of `self.sku.sku_id`) to avoid N+1 queries when evaluating string representations. Type checkers might need configuration or ignores for dynamic `_id` fields, but performance is prioritized.
 - **Authentication**: Endpoints modifying state (POST/PUT/PATCH/DELETE) should generally be secured. By default, DRF is configured with `IsAuthenticatedOrReadOnly`. When creating new ViewSets, if you intend to bypass this, explicitly set `permission_classes = [permissions.AllowAny]`.
 
