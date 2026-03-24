@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/proxy';
+import StockAdjustmentModal from './StockAdjustmentModal';
 
 export const dynamic = "force-dynamic";
 
@@ -122,9 +123,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                  }`}>
                    {stockLevel}
                  </div>
-                 <button className="mt-6 w-full py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold rounded-xl shadow-md hover:scale-[1.02] transition-transform">
-                    Adjust Stock
-                 </button>
+                 <StockAdjustmentModal sku_id={decodedSku} />
               </div>
            </div>
         </section>

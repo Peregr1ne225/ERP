@@ -18,6 +18,13 @@ interface InventoryItem {
   current_stock: number;
 }
 
+interface PriceHistoryItem {
+  sku: string;
+  retail_price: string | number;
+  factory_cost: string | number;
+  effective_date: string;
+}
+
 interface PageProps {
   searchParams: Promise<{ page?: string }>;
 }
@@ -28,10 +35,11 @@ export default async function ProductsListPage({ searchParams }: PageProps) {
   const page = params.page || "1";
   
   // Fetch products and current inventory concurrently respecting DRF Pagination
-  const [productsRes, inventoryRes] = await Promise.allSettled([
+  const [productsRes, inventoryRes, pricingRaw] = await Promise.allSettled([
     api.get(`/api/inventory/products/?page=${page}`),
-    // By paginating current-inventory directly, we ensure total sync and 100% efficient queries
-    api.get(`/api/inventory/current-inventory/?page=${page}`)
+    api.get(`/api/inventory/current-inventory/?page=${page}`),
+    // Query pricing chronologically to map the absolute latest entry per SKU
+    api.getAll("/api/inventory/price-history/")
   ]);
 
   const extractPageData = (res: PromiseSettledResult<unknown>) => {
@@ -56,13 +64,26 @@ export default async function ProductsListPage({ searchParams }: PageProps) {
   const inventoryData = extractPageData(inventoryRes);
   const inventoryList = inventoryData.results as InventoryItem[];
 
-  // Create a map for O(1) lookups: SKU ID -> Current Stock
   const stockMap = new Map<string, number>();
   inventoryList.forEach((inv) => {
     if (inv.sku) {
        stockMap.set(inv.sku, inv.current_stock);
     }
   });
+
+  // Calculate latest pricing matrix per SKU
+  const priceMap = new Map<string, { retail: number; cost: number }>();
+  if (pricingRaw.status === "fulfilled" && Array.isArray(pricingRaw.value)) {
+     // Sort chronologically ascending so the latest price overwrites older ones in the map recursively
+     const sortedPrices = [...(pricingRaw.value as PriceHistoryItem[])].sort(
+        (a, b) => new Date(a.effective_date).getTime() - new Date(b.effective_date).getTime()
+     );
+     sortedPrices.forEach((p) => {
+        if (p.sku) {
+           priceMap.set(p.sku, { retail: Number(p.retail_price), cost: Number(p.factory_cost) });
+        }
+     });
+  }
 
   const currentPage = parseInt(page, 10) || 1;
 
@@ -123,6 +144,8 @@ export default async function ProductsListPage({ searchParams }: PageProps) {
                   <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Category</th>
                   <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Color</th>
                   <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Size</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 text-right">Cost</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 text-right">Retail</th>
                   <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 text-right">In Stock</th>
                   <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 text-right">Actions</th>
                 </tr>
@@ -158,6 +181,12 @@ export default async function ProductsListPage({ searchParams }: PageProps) {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                           {product.size || "—"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                          ฿{priceMap.get(product.sku_id)?.cost?.toFixed(2) || "0.00"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-emerald-600 dark:text-emerald-400 font-bold">
+                          ฿{priceMap.get(product.sku_id)?.retail?.toFixed(2) || "0.00"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${

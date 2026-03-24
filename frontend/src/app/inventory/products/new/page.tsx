@@ -22,6 +22,8 @@ export default function CreateProductPage() {
     category: "",
     size: "",
     color: "",
+    factory_cost: "",
+    retail_price: "",
   });
 
   const [dropdowns, setDropdowns] = useState<DropdownItem[]>([]);
@@ -68,6 +70,22 @@ export default function CreateProductPage() {
       if (!response.ok) {
         const errData = await response.json().catch(() => ({ detail: "Unknown error occurred" }));
         throw new Error(JSON.stringify(errData));
+      }
+
+      // Automatically seed the baseline PriceHistory configuration for this product
+      if (formData.factory_cost || formData.retail_price) {
+         const pricePayload = {
+            sku: derivedSkuId,
+            factory_cost: parseFloat(formData.factory_cost || "0"),
+            retail_price: parseFloat(formData.retail_price || "0"),
+            effective_date: new Date().toISOString().split('T')[0] // 'YYYY-MM-DD'
+         };
+
+         await fetch("http://localhost:8000/api/inventory/price-history/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pricePayload)
+         }).catch(err => console.error("Non-fatal PriceHistory initialization error:", err));
       }
 
       // Success, route back to product detail or list
@@ -227,6 +245,52 @@ export default function CreateProductPage() {
                 </datalist>
               </div>
 
+            </div>
+          </div>
+
+          <hr className="border-zinc-200 dark:border-zinc-800" />
+
+          {/* Economics */}
+          <div>
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+               <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs">3</span>
+               Baseline Economics
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Factory Cost (THB)</label>
+                <div className="relative">
+                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                     <span className="text-zinc-500 font-mono">฿</span>
+                   </div>
+                   <input 
+                     type="number" 
+                     step="0.01"
+                     name="factory_cost" 
+                     placeholder="0.00"
+                     value={formData.factory_cost} 
+                     onChange={handleChange} 
+                     className="w-full pl-9 pr-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                   />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Retail Price (THB)</label>
+                <div className="relative">
+                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                     <span className="text-zinc-500 font-mono">฿</span>
+                   </div>
+                   <input 
+                     type="number" 
+                     step="0.01"
+                     name="retail_price" 
+                     placeholder="0.00"
+                     value={formData.retail_price} 
+                     onChange={handleChange} 
+                     className="w-full pl-9 pr-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                   />
+                </div>
+              </div>
             </div>
           </div>
 
