@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { api } from "@/lib/proxy";
+import StockAdjustmentModal from "@/components/StockAdjustmentModal";
 
 export const dynamic = "force-dynamic";
 
@@ -197,16 +198,14 @@ export default async function ProductsListPage({ searchParams }: PageProps) {
                             {stock}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end gap-3 h-full pt-6">
                           <Link 
                             href={`/inventory/products/${product.sku_id}`} 
-                            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors mr-4"
+                            className="text-blue-600 dark:text-blue-400 font-bold hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                           >
                             View
                           </Link>
-                          <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
-                            Edit
-                          </button>
+                          <StockAdjustmentModal sku_id={product.sku_id} variant="text" />
                         </td>
                       </tr>
                     );

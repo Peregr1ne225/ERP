@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/proxy';
-import StockAdjustmentModal from './StockAdjustmentModal';
+import StockAdjustmentModal from '@/components/StockAdjustmentModal';
 
 export const dynamic = "force-dynamic";
 
