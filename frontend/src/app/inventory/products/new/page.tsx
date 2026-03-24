@@ -177,38 +177,54 @@ export default function CreateProductPage() {
               
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Category <span className="text-rose-500">*</span></label>
-                {categories.length > 0 ? (
-                  <select name="category" value={formData.category} onChange={handleChange} required className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
-                    <option value="" disabled>Select category</option>
-                    {categories.map((c) => <option key={c.id} value={c.list_value}>{c.list_value}</option>)}
-                  </select>
-                ) : (
-                  <input type="text" name="category" required value={formData.category} onChange={handleChange} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                )}
+                <input 
+                  type="text" 
+                  name="category" 
+                  required 
+                  list="category-options"
+                  placeholder="Select or type custom..."
+                  value={formData.category} 
+                  onChange={handleChange} 
+                  autoComplete="off"
+                  className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                />
+                <datalist id="category-options">
+                  {categories.map((c) => <option key={c.id} value={c.list_value} />)}
+                </datalist>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Color</label>
-                {colors.length > 0 ? (
-                  <select name="color" value={formData.color} onChange={handleChange} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
-                    <option value="">None</option>
-                    {colors.map((c) => <option key={c.id} value={c.list_value}>{c.list_value}</option>)}
-                  </select>
-                ) : (
-                  <input type="text" name="color" value={formData.color} onChange={handleChange} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                )}
+                <input 
+                  type="text" 
+                  name="color" 
+                  list="color-options"
+                  placeholder="Select or type custom..."
+                  value={formData.color} 
+                  onChange={handleChange} 
+                  autoComplete="off"
+                  className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                />
+                <datalist id="color-options">
+                  {colors.map((c) => <option key={c.id} value={c.list_value} />)}
+                </datalist>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Size</label>
-                {sizes.length > 0 ? (
-                  <select name="size" value={formData.size} onChange={handleChange} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
-                    <option value="">None</option>
-                    {sizes.map((s) => <option key={s.id} value={s.list_value}>{s.list_value}</option>)}
-                  </select>
-                ) : (
-                  <input type="text" name="size" value={formData.size} onChange={handleChange} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                )}
+                <input 
+                  type="text" 
+                  name="size" 
+                  list="size-options"
+                  placeholder="Select or type custom..."
+                  value={formData.size} 
+                  onChange={handleChange} 
+                  autoComplete="off"
+                  className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                />
+                <datalist id="size-options">
+                  {sizes.map((s) => <option key={s.id} value={s.list_value} />)}
+                </datalist>
               </div>
 
             </div>
