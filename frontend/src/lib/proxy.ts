@@ -23,8 +23,16 @@ export async function proxyFetch(endpoint: string, options: ProxyOptions = {}) {
   if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
     url = endpoint;
   } else {
+    let cleanBase = BACKEND_URL.endsWith("/") ? BACKEND_URL.slice(0, -1) : BACKEND_URL;
     const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-    url = `${BACKEND_URL}${path}`;
+
+    if (cleanBase.endsWith("/api/v1") && path.startsWith("/api/v1")) {
+      cleanBase = cleanBase.slice(0, -7);
+    } else if (cleanBase.endsWith("/api") && path.startsWith("/api")) {
+      cleanBase = cleanBase.slice(0, -4);
+    }
+
+    url = `${cleanBase}${path}`;
   }
 
   const defaultHeaders: Record<string, string> = {
@@ -52,14 +60,14 @@ export async function proxyFetch(endpoint: string, options: ProxyOptions = {}) {
       // Normalize Django API error formats
       let errorData;
       try {
-         errorData = responseText ? JSON.parse(responseText) : null;
+        errorData = responseText ? JSON.parse(responseText) : null;
       } catch {
-         errorData = responseText;
+        errorData = responseText;
       }
       throw {
-         status: response.status,
-         statusText: response.statusText,
-         data: errorData
+        status: response.status,
+        statusText: response.statusText,
+        data: errorData
       };
     }
 
@@ -81,7 +89,7 @@ export const api = {
   getAll: async (endpoint: string, options?: ProxyOptions) => {
     let allResults: unknown[] = [];
     let nextUrl: string | null = endpoint;
-    
+
     while (nextUrl) {
       const data = await proxyFetch(nextUrl, { ...options, method: "GET" }) as { results?: unknown[], next?: string | null } | unknown[];
       if (data && !Array.isArray(data) && Array.isArray(data.results)) {

@@ -30,10 +30,8 @@ services:
       - ./frontend:/app # Hot reloading
       - /app/node_modules # Prevent host node_modules clashing
       - /app/.next # Persist build cache
-    environment:
-      #- WATCHPACK_POLLING=true
-      - INTERNAL_API_URL=http://backend:8000/api/v1
-      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1 # Browser accesses backend locally
+    # environment:
+    #   #- WATCHPACK_POLLING=true
     ports:
       - "3000:3000"
     depends_on:
@@ -47,7 +45,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d app_db"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d app_db" ]
       interval: 5s
       timeout: 5s
       retries: 5
