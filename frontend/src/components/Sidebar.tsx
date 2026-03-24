@@ -9,7 +9,7 @@ const navigation = [
     items: [
       { name: "Products", href: "/inventory/products" },
       { name: "Ledger", href: "/inventory/ledger" },
-      { name: "Settings", href: "/settings" },
+      { name: "Settings", href: "/inventory/settings" },
     ],
   },
   {
