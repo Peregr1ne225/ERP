@@ -19,8 +19,13 @@ export async function proxyFetch(endpoint: string, options: ProxyOptions = {}) {
   const { token, headers, ...restOptions } = options;
 
   // Clean endpoint path
-  const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-  const url = `${BACKEND_URL}${path}`;
+  let url: string;
+  if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+    url = endpoint;
+  } else {
+    const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    url = `${BACKEND_URL}${path}`;
+  }
 
   const defaultHeaders: Record<string, string> = {
     "Content-Type": "application/json",
@@ -67,6 +72,25 @@ export async function proxyFetch(endpoint: string, options: ProxyOptions = {}) {
 
 // Semantic methods for readability acting as our API middleware client
 export const api = {
+  getAll: async (endpoint: string, options?: ProxyOptions) => {
+    let allResults: unknown[] = [];
+    let nextUrl: string | null = endpoint;
+    
+    while (nextUrl) {
+      const data = await proxyFetch(nextUrl, { ...options, method: "GET" }) as { results?: unknown[], next?: string | null } | unknown[];
+      if (data && !Array.isArray(data) && Array.isArray(data.results)) {
+        allResults = [...allResults, ...data.results];
+        nextUrl = data.next || null;
+      } else if (Array.isArray(data)) {
+        allResults = [...allResults, ...data];
+        break;
+      } else {
+        break;
+      }
+    }
+    return allResults;
+  },
+
   get: (endpoint: string, options?: ProxyOptions) =>
     proxyFetch(endpoint, { ...options, method: "GET" }),
 

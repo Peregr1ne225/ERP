@@ -79,7 +79,7 @@ export default function Sidebar() {
       </div>
       <div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-inner">
+          <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-inner">
             A
           </div>
           <div className="flex flex-col">

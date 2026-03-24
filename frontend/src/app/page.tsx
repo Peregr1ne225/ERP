@@ -26,10 +26,11 @@ interface LedgerItem {
 
 export default async function DashboardPage() {
   // Fetch data from Django backend
+  // Use getAll for metrics aggregating entire datasets to handle DRF Pagination
   const [inventoryRes, conversionsRes, projectsRes, ledgerRes] = await Promise.allSettled([
-    api.get("/api/inventory/current-inventory/"),
+    api.getAll("/api/inventory/current-inventory/"),
     api.get("/api/kpi/website-conversions/"),
-    api.get("/api/project/projects/"),
+    api.getAll("/api/project/projects/"),
     api.get("/api/inventory/inventory-ledger/"),
   ]);
 
@@ -37,7 +38,8 @@ export default async function DashboardPage() {
   const extractData = (res: PromiseSettledResult<unknown>) => {
     if (res.status === "fulfilled" && res.value) {
       const val = res.value as Record<string, unknown>;
-      return val.results || val;
+      // api.getAll returns an array directly, api.get might return paginated object
+      return Array.isArray(val) ? val : (val.results || val);
     }
     return [];
   };
@@ -53,13 +55,13 @@ export default async function DashboardPage() {
 
   // 2. Average Order Value (AOV) from Conversions (Using Latest)
   const latestConversion = conversionsList[0] || { aov: 0, conversion_rate: 0 };
-  const avgOrderValue = `$${latestConversion.aov || 0}`;
-  
+  const avgOrderValue = `฿${latestConversion.aov || 0}`;
+
   // 3. Average Project Completion
-  const avgProjectComp = projectsList.length > 0 
+  const avgProjectComp = projectsList.length > 0
     ? Math.round(projectsList.reduce((sum, p) => sum + (p.percent_complete || 0), 0) / projectsList.length)
     : 0;
-    
+
   // 4. Recent Ledgers limit to 4
   const recentLedgers = ledgerList.slice(0, 4);
 
@@ -69,7 +71,7 @@ export default async function DashboardPage() {
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-500">
+            <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-500">
               ERP Overview
             </h1>
             <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-lg">
@@ -85,10 +87,10 @@ export default async function DashboardPage() {
 
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <DashboardCard 
-            title="Total Physical Inventory" 
-            value={totalInventory.toLocaleString()} 
-            metric="Live Data" 
+          <DashboardCard
+            title="Total Physical Inventory"
+            value={totalInventory.toLocaleString()}
+            metric="Live Data"
             metricPositive={true}
             gradient="from-emerald-500/10 to-teal-500/10"
             icon={
@@ -97,10 +99,10 @@ export default async function DashboardPage() {
               </svg>
             }
           />
-          <DashboardCard 
-            title="Avg Order Value (Latest)" 
-            value={avgOrderValue} 
-            metric={`${latestConversion.conversion_rate || 0}% CVR`} 
+          <DashboardCard
+            title="Avg Order Value (Latest)"
+            value={avgOrderValue}
+            metric={`${latestConversion.conversion_rate || 0}% CVR`}
             metricPositive={true}
             gradient="from-blue-500/10 to-indigo-500/10"
             icon={
@@ -109,10 +111,10 @@ export default async function DashboardPage() {
               </svg>
             }
           />
-          <DashboardCard 
-            title="Avg Project Comp." 
-            value={`${avgProjectComp}%`} 
-            metric="From tracked projects" 
+          <DashboardCard
+            title="Avg Project Comp."
+            value={`${avgProjectComp}%`}
+            metric="From tracked projects"
             metricPositive={avgProjectComp > 50}
             gradient="from-purple-500/10 to-pink-500/10"
             icon={
@@ -129,7 +131,7 @@ export default async function DashboardPage() {
             <h2 className="text-xl font-bold mb-4">Recent Transactions</h2>
             <div className="space-y-4">
               {recentLedgers.length === 0 ? (
-                 <p className="text-zinc-500 text-sm italic">No recent transactions found.</p>
+                <p className="text-zinc-500 text-sm italic">No recent transactions found.</p>
               ) : recentLedgers.map((tx, i) => (
                 <div key={i} className="flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group cursor-pointer">
                   <div className="flex items-center gap-4">
@@ -143,11 +145,10 @@ export default async function DashboardPage() {
                       <p className="text-sm text-zinc-500">{new Date(tx.date).toLocaleDateString()}</p>
                     </div>
                   </div>
-                  <span className={`font-medium px-3 py-1 rounded-full text-xs transition-colors ${
-                      tx.movement_type === "MANUAL_IN" 
-                        ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 hover:bg-emerald-200' 
-                        : 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200'
-                  }`}>
+                  <span className={`font-medium px-3 py-1 rounded-full text-xs transition-colors ${tx.movement_type === "MANUAL_IN"
+                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 hover:bg-emerald-200'
+                      : 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200'
+                    }`}>
                     {tx.movement_type}
                   </span>
                 </div>
@@ -156,15 +157,15 @@ export default async function DashboardPage() {
           </div>
 
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 flex flex-col justify-between">
-             <div>
-                <h2 className="text-xl font-bold mb-4">Quick Links</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <QuickLink href="/inventory/products" label="Products" icon="📦" />
-                  <QuickLink href="/kpi/campaigns" label="Campaigns" icon="📈" />
-                  <QuickLink href="/projects" label="Projects" icon="🎯" />
-                  <QuickLink href="/hr/employees" label="Directory" icon="👥" />
-                </div>
-             </div>
+            <div>
+              <h2 className="text-xl font-bold mb-4">Quick Links</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <QuickLink href="/inventory/products" label="Products" icon="📦" />
+                <QuickLink href="/kpi/campaigns" label="Campaigns" icon="📈" />
+                <QuickLink href="/projects" label="Projects" icon="🎯" />
+                <QuickLink href="/hr/employees" label="Directory" icon="👥" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -184,7 +185,7 @@ interface DashboardCardProps {
 function DashboardCard({ title, value, metric, metricPositive, icon, gradient }: DashboardCardProps) {
   return (
     <div className={`relative p-6 bg-white dark:bg-zinc-900 rounded-3xl shadow-sm border border-zinc-100 dark:border-zinc-800 overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300`}>
-      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform duration-500`} />
+      <div className={`absolute top-0 right-0 w-32 h-32 bg-linear-to-br ${gradient} rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform duration-500`} />
       <div className="relative z-10 flex justify-between items-start">
         <div className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-2xl">
           {icon}
