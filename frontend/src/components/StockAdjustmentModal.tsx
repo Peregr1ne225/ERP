@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function StockAdjustmentModal({ sku_id }: { sku_id: string }) {
+export default function StockAdjustmentModal({ sku_id, variant = "default" }: { sku_id: string; variant?: "default" | "text" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,12 +65,21 @@ export default function StockAdjustmentModal({ sku_id }: { sku_id: string }) {
 
   return (
     <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="mt-6 w-full py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold rounded-xl shadow-md hover:scale-[1.02] transition-transform"
-      >
-        Adjust Stock
-      </button>
+      {variant === "text" ? (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="text-emerald-600 dark:text-emerald-400 font-bold hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors"
+        >
+          Adjust Stock
+        </button>
+      ) : (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="mt-6 w-full py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold rounded-xl shadow-md hover:scale-[1.02] transition-transform"
+        >
+          Adjust Stock
+        </button>
+      )}
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/60 backdrop-blur-sm transition-opacity">
