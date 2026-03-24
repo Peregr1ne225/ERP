@@ -46,13 +46,15 @@ export async function proxyFetch(endpoint: string, options: ProxyOptions = {}) {
       headers: finalHeaders,
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
       // Normalize Django API error formats
       let errorData;
       try {
-         errorData = await response.json();
+         errorData = responseText ? JSON.parse(responseText) : null;
       } catch {
-         errorData = await response.text();
+         errorData = responseText;
       }
       throw {
          status: response.status,
@@ -61,9 +63,13 @@ export async function proxyFetch(endpoint: string, options: ProxyOptions = {}) {
       };
     }
 
-    // Try to auto-parse JSON if empty returns text or 204 matches
-    if (response.status === 204) return null;
-    return response.json();
+    // Auto-parse JSON or return text fallback
+    if (response.status === 204 || !responseText) return null;
+    try {
+      return JSON.parse(responseText);
+    } catch {
+      return responseText;
+    }
   } catch (error) {
     console.error(`[Proxy] API Request failed for ${url}:`, error);
     throw error;
