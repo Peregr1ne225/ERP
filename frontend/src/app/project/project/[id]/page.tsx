@@ -136,40 +136,46 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           ) : (
             <div className="grid gap-4">
               {enrichedTasks.sort((a, b) => b.priority === "Emergency" ? 1 : -1).map(task => (
-                <div key={task.task_id} className="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 hover:shadow-lg transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <Link 
+                  key={task.task_id} 
+                  href={`/project/tasks/${task.task_id}`}
+                  className="group block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 hover:shadow-lg transition-all border-l-4 border-l-transparent hover:border-l-indigo-500"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
 
-                  <div className="flex-1 flex items-start gap-5">
-                    <div className="mt-1 shrink-0">
-                      <div className={`w-3 h-3 rounded-full ${getStatusColor(task.status).split(' ')[0]}`} />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-[10px] font-mono text-zinc-400">{task.task_id}</span>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider ${getPriorityColor(task.priority)}`}>
-                          {task.priority}
-                        </span>
+                    <div className="flex-1 flex items-start gap-5">
+                      <div className="mt-1 shrink-0">
+                        <div className={`w-3 h-3 rounded-full ${getStatusColor(task.status).split(' ')[0]}`} />
                       </div>
-                      <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                        {task.task_name}
-                      </h4>
-                      <div className="flex items-center gap-4 mt-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                        <span className="flex items-center gap-1.5 text-zinc-700 dark:text-zinc-300">
-                          <svg className="w-3.5 h-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                          {task.assigned_to_name}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <svg className="w-3.5 h-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                          Due {new Date(task.due_date).toLocaleDateString()}
-                        </span>
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-[10px] font-mono text-zinc-400">{task.task_id}</span>
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider ${getPriorityColor(task.priority)}`}>
+                            {task.priority}
+                          </span>
+                        </div>
+                        <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                          {task.task_name}
+                        </h4>
+                        <div className="flex items-center gap-4 mt-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                          <span className="flex items-center gap-1.5 text-zinc-700 dark:text-zinc-300">
+                            <svg className="w-3.5 h-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                            {task.assigned_to_name}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <svg className="w-3.5 h-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            Due {new Date(task.due_date).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
                     <div className="flex items-center gap-6">
                       <ChangeTaskStatusButton taskId={task.task_id} currentStatus={task.status} />
                     </div>
 
-                </div>
+                  </div>
+                </Link>
               ))}
             </div>
           )}

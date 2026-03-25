@@ -14,7 +14,9 @@ export default function ChangeTaskStatusButton({ taskId, currentStatus }: Change
 
   const statuses = ["TO DO", "IN PROGRESS", "DONE"];
   
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (e: React.MouseEvent, newStatus: string) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (newStatus === currentStatus) return;
     
     setLoading(true);
@@ -45,12 +47,15 @@ export default function ChangeTaskStatusButton({ taskId, currentStatus }: Change
   };
 
   return (
-    <div className="flex gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+    <div 
+      className="flex gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl"
+      onClick={(e) => e.stopPropagation()}
+    >
       {statuses.map((status) => (
         <button
           key={status}
           disabled={loading}
-          onClick={() => handleStatusChange(status)}
+          onClick={(e) => handleStatusChange(e, status)}
           className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
             status === currentStatus 
               ? getStatusStyle(status) 
