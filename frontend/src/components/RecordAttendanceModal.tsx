@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 interface Employee {
@@ -17,6 +17,9 @@ export default function RecordAttendanceModal({ employees }: RecordAttendanceMod
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  
+  const checkInRef = useRef<HTMLInputElement>(null);
+  const checkOutRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     employee: "",
@@ -73,7 +76,7 @@ export default function RecordAttendanceModal({ employees }: RecordAttendanceMod
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/60 backdrop-blur-sm transition-opacity">
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 max-w-lg w-full shadow-2xl relative">
             
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-2xl font-extrabold text-zinc-900 dark:text-white">Record Presence</h2>
@@ -107,26 +110,46 @@ export default function RecordAttendanceModal({ employees }: RecordAttendanceMod
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                 <div>
-                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Check In <span className="text-rose-500">*</span></label>
-                   <input 
-                     type="datetime-local" required
-                     value={formData.check_in}
-                     onChange={(e) => setFormData(p => ({ ...p, check_in: e.target.value }))}
-                     className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-white"
-                   />
-                 </div>
-                 <div>
-                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Check Out</label>
-                   <input 
-                     type="datetime-local"
-                     value={formData.check_out}
-                     onChange={(e) => setFormData(p => ({ ...p, check_out: e.target.value }))}
-                     className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-white"
-                   />
-                 </div>
-              </div>
+               <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Check In <span className="text-rose-500">*</span></label>
+                    <div className="relative group/date">
+                      <input 
+                        ref={checkInRef}
+                        type="datetime-local" required
+                        value={formData.check_in}
+                        onChange={(e) => setFormData(p => ({ ...p, check_in: e.target.value }))}
+                        className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-white pr-10"
+                      />
+                      <button 
+                         type="button"
+                         onClick={() => checkInRef.current?.showPicker()}
+                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-zinc-400 hover:text-indigo-600 transition-colors"
+                      >
+                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Check Out</label>
+                    <div className="relative group/date">
+                      <input 
+                        ref={checkOutRef}
+                        type="datetime-local"
+                        value={formData.check_out}
+                        onChange={(e) => setFormData(p => ({ ...p, check_out: e.target.value }))}
+                        className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-white pr-10"
+                      />
+                      <button 
+                         type="button"
+                         onClick={() => checkOutRef.current?.showPicker()}
+                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-zinc-400 hover:text-indigo-600 transition-colors"
+                      >
+                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      </button>
+                    </div>
+                  </div>
+               </div>
 
               <div className="pt-4 flex gap-4">
                 <button type="button" onClick={() => setIsOpen(false)} className="flex-1 py-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold rounded-xl hover:bg-zinc-200 transition-colors">
