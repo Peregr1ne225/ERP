@@ -20,6 +20,7 @@ class AttendanceLogViewSet(viewsets.ModelViewSet):
     queryset = AttendanceLog.objects.all()
     serializer_class = AttendanceLogSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["employee"]
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -32,6 +33,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["assigned_to", "project", "status"]
 
     @action(detail=False, methods=["get"])
     def late_work(self, request):

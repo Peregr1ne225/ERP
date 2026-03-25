@@ -16,7 +16,7 @@ const navigation = [
   {
     name: "Marketing & KPIs",
     icon: "📈",
-    href: "/marketing",
+    href: "/kpi",
     items: [
       { name: "Campaigns", href: "/kpi/campaigns" },
       { name: "Ad Performance", href: "/kpi/ads" },
@@ -26,11 +26,11 @@ const navigation = [
   {
     name: "HR & Projects",
     icon: "👥",
-    href: "/projects",
+    href: "/project",
     items: [
-      { name: "Directory", href: "/hr/employees" },
-      { name: "Attendance", href: "/hr/attendance" },
-      { name: "Projects", href: "/projects" },
+      { name: "Employees", href: "/project/employees" },
+      { name: "Attendance", href: "/project/attendance" },
+      { name: "Projects", href: "/project/project" },
     ],
   },
 ];
@@ -86,7 +86,7 @@ export default function Sidebar() {
           ))}
         </nav>
       </div>
-      <div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
+      {/* <div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-inner">
             A
@@ -96,7 +96,7 @@ export default function Sidebar() {
             <span className="text-xs text-zinc-500 dark:text-zinc-400">admin@erp.com</span>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
