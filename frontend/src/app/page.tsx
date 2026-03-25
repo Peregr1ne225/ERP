@@ -162,8 +162,8 @@ export default async function DashboardPage() {
               <div className="grid grid-cols-2 gap-4">
                 <QuickLink href="/inventory/products" label="Products" icon="📦" />
                 <QuickLink href="/kpi/campaigns" label="Campaigns" icon="📈" />
-                <QuickLink href="/projects" label="Projects" icon="🎯" />
-                <QuickLink href="/hr/employees" label="Directory" icon="👥" />
+                <QuickLink href="/project/project" label="Projects" icon="🎯" />
+                <QuickLink href="/project/employees" label="Directory" icon="👥" />
               </div>
             </div>
           </div>
