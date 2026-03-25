@@ -22,6 +22,13 @@ interface PricingItem {
   effective_date: string;
 }
 
+interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 export default async function ProductDetailPage({ params }: { params: Promise<{ sku_id: string }> }) {
   // Extract and decode SKU from URL param
   const resolvedParams = await params;
@@ -31,16 +38,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const productRes = await api.get(`/api/inventory/products/${decodedSku}/`).catch(() => null);
   const stockRes = await api.get(`/api/inventory/current-inventory/${decodedSku}/`).catch(() => null);
   
-  // For related sets, we use getAll and filter locally to ensure it works regardless of DRF filter configurations
-  const ledgersRaw = await api.getAll("/api/inventory/inventory-ledger/").catch(() => []);
-  const allLedgers: LedgerItem[] = ledgersRaw as LedgerItem[];
+  // For related sets, we fetch only data belonging to this SKU now that filtering is enabled
+  const ledgersRaw = await api.get(`/api/inventory/inventory-ledger/?sku=${encodeURIComponent(decodedSku)}&page_size=100`).catch(() => null);
+  const ledgers: LedgerItem[] = (ledgersRaw as unknown as PaginatedResponse<LedgerItem>)?.results || [];
   
-  const pricingRaw = await api.getAll("/api/inventory/price-history/").catch(() => []);
-  const allPricing: PricingItem[] = pricingRaw as PricingItem[];
-  
-  // Narrow down the aggregated lists to just this SKU
-  const ledgers = allLedgers.filter((l) => l.sku === decodedSku);
-  const pricing = allPricing.filter((p) => p.sku === decodedSku);
+  const pricingRaw = await api.get(`/api/inventory/price-history/?sku=${encodeURIComponent(decodedSku)}&page_size=100`).catch(() => null);
+  const pricing: PricingItem[] = (pricingRaw as unknown as PaginatedResponse<PricingItem>)?.results || [];
 
   // If Product endpoint 404s
   if (!productRes) {

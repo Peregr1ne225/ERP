@@ -31,12 +31,14 @@ class PriceHistoryViewSet(viewsets.ModelViewSet):
     queryset = PriceHistory.objects.all()
     serializer_class = PriceHistorySerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["sku"]
 
 
 class InventoryLedgerViewSet(viewsets.ModelViewSet):
     queryset = InventoryLedger.objects.all()
     serializer_class = InventoryLedgerSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["sku"]
 
 
 class CurrentInventoryViewSet(viewsets.ModelViewSet):

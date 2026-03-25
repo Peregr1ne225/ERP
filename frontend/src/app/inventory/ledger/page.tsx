@@ -13,17 +13,32 @@ interface LedgerEntry {
   note: string | null;
 }
 
+interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 export default async function InventoryLedgerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; sku?: string }>;
 }) {
   const resolvedParams = await searchParams;
   const page = Number(resolvedParams.page) || 1;
+  const sku = resolvedParams.sku || "";
   const pageSize = 50;
 
+  // Build query string
+  let query = `?page=${page}`;
+  if (sku) {
+    query += `&sku=${encodeURIComponent(sku)}`;
+  }
+
   // Fetch paginated explicit data using standard GET instead of getAll
-  const data = await api.get(`/api/inventory/inventory-ledger/?page=${page}`).catch(() => null);
+  const dataRaw = await api.get(`/api/inventory/inventory-ledger/${query}`).catch(() => null);
+  const data = dataRaw as PaginatedResponse<LedgerEntry> | null;
 
   const ledgers: LedgerEntry[] = data?.results || [];
   const totalCount = data?.count || 0;
@@ -60,6 +75,37 @@ export default async function InventoryLedgerPage({
               Immutable audit log of all stock movements and transactions.
             </p>
           </div>
+          
+          {/* Search Filter UI */}
+          <form method="GET" action="/inventory/ledger" className="flex items-center gap-2">
+            <div className="relative">
+              <input 
+                type="text" 
+                name="sku"
+                placeholder="Search by SKU..." 
+                defaultValue={sku}
+                className="pl-10 pr-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all w-64"
+              />
+              <svg className="w-4 h-4 absolute left-3 top-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <button 
+              type="submit"
+              className="px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
+            >
+              Filter
+            </button>
+            {sku && (
+              <Link 
+                href="/inventory/ledger"
+                className="p-2 text-zinc-500 hover:text-rose-500 transition-colors"
+                title="Clear filter"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </Link>
+            )}
+          </form>
         </header>
 
         {/* Ledger Data Table */}
@@ -122,7 +168,7 @@ export default async function InventoryLedgerPage({
                 ) : (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
-                      No ledger transactions found on this page.
+                      {sku ? `No transactions found for SKU "${sku}".` : "No ledger transactions found on this page."}
                     </td>
                   </tr>
                 )}
@@ -140,7 +186,7 @@ export default async function InventoryLedgerPage({
               </p>
               <div className="flex gap-2">
                 <Link
-                  href={page > 1 ? `/inventory/ledger?page=${page - 1}` : "#"}
+                  href={page > 1 ? `/inventory/ledger?page=${page - 1}${sku ? `&sku=${sku}` : ""}` : "#"}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                     page > 1
                       ? "bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
@@ -151,7 +197,7 @@ export default async function InventoryLedgerPage({
                   Previous
                 </Link>
                 <Link
-                  href={page < totalPages ? `/inventory/ledger?page=${page + 1}` : "#"}
+                  href={page < totalPages ? `/inventory/ledger?page=${page + 1}${sku ? `&sku=${sku}` : ""}` : "#"}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                     page < totalPages
                       ? "bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
