@@ -27,9 +27,19 @@ class AttendanceLog(models.Model):
 
 
 class Project(models.Model):
+    STATUS_CHOICES = [
+        ("PLANNED", "Planned"),
+        ("ACTIVE", "Active"),
+        ("ON_HOLD", "On Hold"),
+        ("COMPLETED", "Completed"),
+        ("CANCELLED", "Cancelled"),
+    ]
     project_id = models.CharField(max_length=50, primary_key=True)
     project_name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="PLANNED"
+    )
 
     @property
     def percent_complete(self) -> float:
