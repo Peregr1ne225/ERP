@@ -6,6 +6,7 @@ const navigation = [
   {
     name: "Inventory",
     icon: "📦",
+    href: "/inventory",
     items: [
       { name: "Products", href: "/inventory/products" },
       { name: "Ledger", href: "/inventory/ledger" },
@@ -15,6 +16,7 @@ const navigation = [
   {
     name: "Marketing & KPIs",
     icon: "📈",
+    href: "/marketing",
     items: [
       { name: "Campaigns", href: "/kpi/campaigns" },
       { name: "Ad Performance", href: "/kpi/ads" },
@@ -24,6 +26,7 @@ const navigation = [
   {
     name: "HR & Projects",
     icon: "👥",
+    href: "/projects",
     items: [
       { name: "Directory", href: "/hr/employees" },
       { name: "Attendance", href: "/hr/attendance" },
@@ -49,10 +52,16 @@ export default function Sidebar() {
             <div key={group.name} className="space-y-3">
               {group.items ? (
                 <>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
-                    <span className="text-base">{group.icon}</span> {group.name}
-                  </h3>
-                  <div className="space-y-1 pl-7">
+                  {group.href ? (
+                    <Link href={group.href} className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">
+                      <span className="text-base">{group.icon}</span> {group.name}
+                    </Link>
+                  ) : (
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+                      <span className="text-base">{group.icon}</span> {group.name}
+                    </h3>
+                  )}
+                  <div className="space-y-1 pl-7 mt-3">
                     {group.items.map((item) => (
                       <Link
                         key={item.href}

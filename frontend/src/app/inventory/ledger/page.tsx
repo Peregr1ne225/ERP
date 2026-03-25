@@ -136,10 +136,12 @@ export default async function InventoryLedgerPage({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-300">
-                        {new Date(row.date).toLocaleDateString(undefined, {
+                        {new Date(row.date).toLocaleString(undefined, {
                            year: 'numeric',
                            month: 'short',
-                           day: 'numeric'
+                           day: 'numeric',
+                           hour: '2-digit',
+                           minute: '2-digit'
                         })}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

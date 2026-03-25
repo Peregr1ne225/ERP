@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/proxy';
 import StockAdjustmentModal from '@/components/StockAdjustmentModal';
+import PriceAdjustmentModal from '@/components/PriceAdjustmentModal';
 
 export const dynamic = "force-dynamic";
 
@@ -70,8 +71,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const profitMargin = Number(currentPrice.retail_price) - Number(currentPrice.factory_cost);
   const marginPercent = currentPrice.retail_price ? Math.round((profitMargin / Number(currentPrice.retail_price)) * 100) : 0;
 
-  // Sort ledgers latest to oldest
-  const sortedLedgers = [...ledgers].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  // Sort ledgers latest to oldest, showing only top 5 for the timeline
+  const sortedLedgers = [...ledgers]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 p-8 font-sans transition-colors duration-300">
@@ -135,9 +138,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
            <div className="md:col-span-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
               <div>
-                 <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Pricing Matrix
+                 <h2 className="text-lg font-bold mb-4 flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                       <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                       Pricing Matrix
+                    </span>
+                    <PriceAdjustmentModal 
+                       sku_id={decodedSku} 
+                       currentFactoryCost={currentPrice.factory_cost} 
+                       currentRetailPrice={currentPrice.retail_price} 
+                    />
                  </h2>
                  <div className="space-y-4">
                     <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl">
@@ -147,6 +157,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl">
                        <span className="text-sm font-medium text-zinc-500">Factory Cost</span>
                        <span className="text-lg font-bold text-zinc-900 dark:text-white">฿{currentPrice.factory_cost}</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl">
+                       <span className="text-sm font-medium text-zinc-500">Effective Date</span>
+                       <span className="text-sm font-bold text-zinc-900 dark:text-white">
+                         {currentPrice.effective_date ? new Date(currentPrice.effective_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : "—"}
+                       </span>
                     </div>
                  </div>
               </div>
@@ -170,7 +186,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                    <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                    Inventory Ledger History
                 </h2>
-                <button className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">View All</button>
+                 <Link 
+                    href={`/inventory/ledger?sku=${encodeURIComponent(decodedSku)}`}
+                    className="text-sm text-blue-600 dark:text-blue-400 font-bold hover:underline"
+                 >
+                    View All
+                 </Link>
              </div>
              
              {sortedLedgers.length === 0 ? (
@@ -197,7 +218,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                                     {ledger.qty_change > 0 ? '+' : ''}{ledger.qty_change}
                                  </span>
                                </p>
-                               <p className="text-sm text-zinc-500">{new Date(ledger.date).toLocaleDateString()} {ledger.note ? `— ${ledger.note}` : ''}</p>
+                               <p className="text-sm text-zinc-500">
+                                 {new Date(ledger.date).toLocaleString(undefined, {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                 })}
+                                 {ledger.note ? ` — ${ledger.note}` : ''}
+                               </p>
                             </div>
                          </div>
                       </div>

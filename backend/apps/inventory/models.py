@@ -44,7 +44,7 @@ class InventoryLedger(models.Model):
     )
     movement_type = models.CharField(max_length=20, choices=MOVEMENT_CHOICES)
     qty_change = models.IntegerField(default=0)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True, null=True)
 
     def __str__(self):
