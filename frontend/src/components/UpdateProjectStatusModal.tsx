@@ -15,11 +15,11 @@ export default function UpdateProjectStatusModal({ projectId, currentStatus }: U
   const router = useRouter();
 
   const statusChoices = [
-    "Planned",
-    "Active", 
-    "On Hold",
-    "Completed",
-    "Cancelled"
+    { value: "PLANNED", label: "Planned" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "ON_HOLD", label: "On Hold" },
+    { value: "COMPLETED", label: "Completed" },
+    { value: "CANCELLED", label: "Cancelled" },
   ];
 
   const handleUpdate = async (status: string) => {
@@ -45,10 +45,10 @@ export default function UpdateProjectStatusModal({ projectId, currentStatus }: U
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Active": return "bg-indigo-600 dark:bg-indigo-500 text-white";
-      case "Completed": return "bg-emerald-600 dark:bg-emerald-500 text-white";
-      case "On Hold": return "bg-amber-600 dark:bg-amber-500 text-white";
-      case "Cancelled": return "bg-rose-600 dark:bg-rose-500 text-white";
+      case "ACTIVE": return "bg-indigo-600 dark:bg-indigo-500 text-white";
+      case "COMPLETED": return "bg-emerald-600 dark:bg-emerald-500 text-white";
+      case "ON_HOLD": return "bg-amber-600 dark:bg-amber-500 text-white";
+      case "CANCELLED": return "bg-rose-600 dark:bg-rose-500 text-white";
       default: return "bg-zinc-600 dark:bg-zinc-500 text-white";
     }
   };
@@ -77,17 +77,17 @@ export default function UpdateProjectStatusModal({ projectId, currentStatus }: U
             <div className="grid grid-cols-1 gap-2">
                {statusChoices.map(status => (
                  <button
-                   key={status}
+                   key={status.value}
                    disabled={loading}
-                   onClick={() => handleUpdate(status)}
+                   onClick={() => handleUpdate(status.value)}
                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                     status === currentStatus 
-                       ? getStatusColor(status) 
+                     status.value === currentStatus 
+                       ? getStatusColor(status.value) 
                        : "bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                    }`}
                  >
-                   {status}
-                   {status === currentStatus && <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                   {status.label}
+                   {status.value === currentStatus && <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                  </button>
                ))}
             </div>
