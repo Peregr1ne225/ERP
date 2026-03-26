@@ -49,7 +49,7 @@ export default function DeleteProductButton({ sku_id }: DeleteProductButtonProps
         isOpen={isOpen}
         loading={loading}
         title="Purge Stock Record"
-        message={`Are you absolutely sure you want to PERMANENTLY delete product ${sku_id}? This will also delete all associated Price History and Ledger entries. This action is irreversible.`}
+        message={`Are you absolutely sure you want to\nPERMANENTLY delete product ${sku_id}?\n\nThis will also delete all associated\nPrice History and Ledger entries.\n\nThis action is irreversible.`}
         confirmText="Confirm Purge"
         onConfirm={handleDelete}
         onCancel={() => setIsOpen(false)}

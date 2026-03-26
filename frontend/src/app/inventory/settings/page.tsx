@@ -203,7 +203,7 @@ export default function SettingsPage() {
           isOpen={deleteModal.isOpen}
           loading={isSubmitting}
           title="Delete Configuration"
-          message="Are you sure you want to delete this option? This may impact existing records using this value."
+          message={"Are you sure you want to delete this option?\n\nThis may impact existing records\nusing this value."}
           confirmText="Confirm Delete"
           onConfirm={confirmDelete}
           onCancel={() => setDeleteModal({ isOpen: false, id: null })}

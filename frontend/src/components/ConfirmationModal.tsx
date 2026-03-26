@@ -64,7 +64,7 @@ export default function ConfirmationModal({
         {getIcon()}
 
         <h2 className="text-2xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter italic mb-3">{title}</h2>
-        <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium mb-8 leading-relaxed">
+        <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium mb-8 leading-relaxed whitespace-pre-line">
           {message}
         </p>
 
