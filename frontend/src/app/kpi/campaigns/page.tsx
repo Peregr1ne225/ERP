@@ -2,6 +2,7 @@ import React from "react";
 import { api } from "@/lib/proxy";
 import Link from "next/link";
 import CreateCampaignModal from "@/components/CreateCampaignModal";
+import DeleteCampaignButton from "@/components/DeleteCampaignButton";
 
 export const dynamic = "force-dynamic";
 
@@ -63,18 +64,17 @@ export default async function CampaignsPage() {
                     <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border uppercase tracking-wider ${getPlatformColor(campaign.platform)}`}>
                       {getPlatformIcon(campaign.platform)} {campaign.platform}
                     </span>
-                    <span className="text-[10px] font-mono text-zinc-400">{campaign.campaign_id}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-zinc-400">{campaign.campaign_id}</span>
+                      <DeleteCampaignButton campaignId={campaign.campaign_id} campaignName={campaign.campaign_name} variant="icon" />
+                    </div>
                   </div>
                   <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 transition-colors">
                     {campaign.campaign_name}
                   </h3>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                  <div className="flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full border-2 border-white dark:border-zinc-900 bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold">A</div>
-                    <div className="w-8 h-8 rounded-full border-2 border-white dark:border-zinc-900 bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-bold">M</div>
-                  </div>
+                <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-end">
                   <Link
                     href={`/kpi/campaigns/${campaign.campaign_id}`}
                     className="text-xs font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors"

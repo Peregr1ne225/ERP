@@ -136,8 +136,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           ) : (
             <div className="grid gap-4">
               {enrichedTasks.sort((a, b) => b.priority === "Emergency" ? 1 : -1).map(task => (
-                <Link 
-                  key={task.task_id} 
+                <Link
+                  key={task.task_id}
                   href={`/project/tasks/${task.task_id}`}
                   className="group block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 hover:shadow-lg transition-all border-l-4 border-l-transparent hover:border-l-indigo-500"
                 >

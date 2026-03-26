@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/proxy";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 interface DropdownItem {
   id: number;
@@ -18,6 +19,7 @@ export default function SettingsPage() {
   // Form State
   const [newListType, setNewListType] = useState("Category");
   const [newListValue, setNewListValue] = useState("");
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: number | null }>({ isOpen: false, id: null });
 
   const fetchDropdowns = async () => {
     setLoading(true);
@@ -69,9 +71,14 @@ export default function SettingsPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this option?")) return;
+  const handleDelete = (id: number) => {
+    setDeleteModal({ isOpen: true, id });
+  };
 
+  const confirmDelete = async () => {
+    if (deleteModal.id === null) return;
+    const id = deleteModal.id;
+    setIsSubmitting(true);
     try {
       const res = await fetch(`http://localhost:8000/api/inventory/dropdowns/${id}/`, {
         method: "DELETE"
@@ -79,8 +86,11 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error("Failed to delete dropdown value");
 
       setDropdowns(prev => prev.filter(d => d.id !== id));
+      setDeleteModal({ isOpen: false, id: null });
     } catch {
-      alert("Failed to delete the item. It might be in use.");
+      setError("Failed to delete the item. It might be in use.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -188,6 +198,17 @@ export default function SettingsPage() {
           </div>
 
         </div>
+
+        <ConfirmationModal
+          isOpen={deleteModal.isOpen}
+          loading={isSubmitting}
+          title="Delete Configuration"
+          message="Are you sure you want to delete this option? This may impact existing records using this value."
+          confirmText="Confirm Delete"
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteModal({ isOpen: false, id: null })}
+          variant="danger"
+        />
       </div>
     </div>
   );

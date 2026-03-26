@@ -2,6 +2,7 @@ import React from "react";
 import { api } from "@/lib/proxy";
 import RecordAttendanceModal from "@/components/RecordAttendanceModal";
 import CheckOutButton from "@/components/CheckOutButton";
+import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
 
 export const dynamic = "force-dynamic";
 
@@ -142,7 +143,10 @@ export default async function AttendanceLogPage() {
                              </>
                            )}
                         </div>
-                        <p className="mt-4 text-xs font-mono text-zinc-400 dark:text-zinc-600">SID: {log.id}</p>
+                        <div className="mt-4 flex items-center justify-between">
+                           <p className="text-xs font-mono text-zinc-400 dark:text-zinc-600">SID: {log.id}</p>
+                           <DeleteAttendanceButton logId={log.id} />
+                        </div>
                      </div>
 
                   </div>

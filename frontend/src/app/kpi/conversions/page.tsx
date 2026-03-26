@@ -1,6 +1,7 @@
 import React from "react";
 import { api } from "@/lib/proxy";
 import RecordConversionsModal from "@/components/RecordConversionsModal";
+import DeleteConversionButton from "@/components/DeleteConversionButton";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,7 @@ export default async function ConversionsPage() {
                   <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">Volume</th>
                   <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">CVR</th>
                   <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">AOV</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -112,6 +114,9 @@ export default async function ConversionsPage() {
                       </td>
                       <td className="px-8 py-6 text-right text-sm font-black text-zinc-900 dark:text-zinc-100">
                         ฿{c.aov}
+                      </td>
+                      <td className="px-8 py-6 text-right">
+                        <DeleteConversionButton conversionId={c.id} />
                       </td>
                     </tr>
                   ))
