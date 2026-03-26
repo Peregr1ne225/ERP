@@ -37,7 +37,7 @@ const navigation = [
 
 export default function Sidebar() {
   return (
-    <div className="flex h-full w-64 flex-col bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 transition-colors">
+    <div className="flex h-full w-64 flex-col bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 transition-colors font-outfit">
       <div className="flex h-16 shrink-0 items-center px-6 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-blue-600 dark:text-blue-500">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
