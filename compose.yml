@@ -39,7 +39,7 @@ services:
         condition: service_started
 
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     env_file: .env
     # environment: (No specific overrides needed if .env has POSTGRES_ vars)
     volumes:
