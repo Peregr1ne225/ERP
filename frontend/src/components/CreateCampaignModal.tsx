@@ -13,6 +13,10 @@ export default function CreateCampaignModal() {
     campaign_id: "",
     campaign_name: "",
     platform: "Facebook",
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    budget: "10000",
+    status: "Active"
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +37,15 @@ export default function CreateCampaignModal() {
       }
 
       setIsOpen(false);
-      setFormData({ campaign_id: "", campaign_name: "", platform: "Facebook" });
+      setFormData({ 
+        campaign_id: "", 
+        campaign_name: "", 
+        platform: "Facebook",
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        budget: "10000",
+        status: "Active"
+      });
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Submission failed");
@@ -76,7 +88,7 @@ export default function CreateCampaignModal() {
                   type="text" required
                   placeholder="e.g. MKT-2024-SUMMER"
                   value={formData.campaign_id} onChange={(e) => setFormData(p => ({ ...p, campaign_id: e.target.value }))}
-                  className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-zinc-300"
+                  className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-zinc-400"
                 />
               </div>
 
@@ -86,7 +98,7 @@ export default function CreateCampaignModal() {
                   type="text" required
                   placeholder="Summer Collection Push"
                   value={formData.campaign_name} onChange={(e) => setFormData(p => ({ ...p, campaign_name: e.target.value }))}
-                  className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-zinc-300"
+                  className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-zinc-400"
                 />
               </div>
 
@@ -103,8 +115,37 @@ export default function CreateCampaignModal() {
                 </select>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-2 pl-1">Start Date</label>
+                  <input 
+                    type="date" required
+                    value={formData.start_date} onChange={(e) => setFormData(p => ({ ...p, start_date: e.target.value }))}
+                    className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-2 pl-1">End Date</label>
+                  <input 
+                    type="date" required
+                    value={formData.end_date} onChange={(e) => setFormData(p => ({ ...p, end_date: e.target.value }))}
+                    className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-2 pl-1">Initial Budget (THB)</label>
+                <input 
+                  type="number" required
+                  placeholder="10000"
+                  value={formData.budget} onChange={(e) => setFormData(p => ({ ...p, budget: e.target.value }))}
+                  className="w-full px-5 py-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-zinc-400"
+                />
+              </div>
+
               <div className="pt-6 flex gap-4">
-                <button type="button" onClick={() => setIsOpen(false)} className="flex-1 py-5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold rounded-2xl hover:bg-zinc-200 transition-colors uppercase tracking-widest text-[10px]">
+                <button type="button" onClick={() => setIsOpen(false)} className="flex-1 py-5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold rounded-2xl hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/20 dark:hover:text-rose-400 transition-all uppercase tracking-widest text-[10px]">
                   Discard
                 </button>
                 <button 
