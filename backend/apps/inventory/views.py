@@ -19,12 +19,15 @@ class DropdownListViewSet(viewsets.ModelViewSet):
     queryset = DropdownList.objects.all()
     serializer_class = DropdownListSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["list_type"]
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["category"]
+    search_fields = ["sku_id", "product_name", "ref"]
 
 
 class PriceHistoryViewSet(viewsets.ModelViewSet):
