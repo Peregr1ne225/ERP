@@ -25,10 +25,16 @@ class MarketingCampaignViewSet(viewsets.ModelViewSet):
         start_date_str = request.query_params.get("start_date")
         end_date_str = request.query_params.get("end_date")
 
+        # Fallback to campaign's own dates if not provided in query params
+        if not start_date_str and campaign.start_date:
+            start_date_str = campaign.start_date.strftime("%Y-%m-%d")
+        if not end_date_str and campaign.end_date:
+            end_date_str = campaign.end_date.strftime("%Y-%m-%d")
+
         if not start_date_str or not end_date_str:
             raise ValidationError(
                 {
-                    "detail": "start_date and end_date are required query parameters. Format: YYYY-MM-DD"
+                    "detail": "start_date and end_date are required (either as query params or defined on campaign). Format: YYYY-MM-DD"
                 }
             )
 

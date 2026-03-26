@@ -11,6 +11,10 @@ class MarketingCampaign(models.Model):
     campaign_id = models.CharField(max_length=50, primary_key=True)
     campaign_name = models.CharField(max_length=255)
     platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES)
+    status = models.CharField(max_length=20, default="Active")
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    budget = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
 
     def __str__(self):
         return f"{self.campaign_id} - {self.campaign_name}"
