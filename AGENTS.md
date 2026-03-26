@@ -15,22 +15,29 @@ ERP/
 │   │   ├── kpi/         # Mktg & E-com analytics (Campaigns, Ads, Conversions)
 │   │   └── project/     # HR & PM system (Employee, AttendanceLog, Project, Task)
 │   ├── config/          # Core settings, WSGI, ASGI, and root urls.py
+│   ├── Dockerfile.dev   # Development Dockerfile
+│   ├── Dockerfile.prod  # Production Dockerfile (Python 3.14, Gunicorn)
 │   └── manage.py
 ├── frontend/            # Next.js 16.2.0 UI (React 19, TypeScript, Tailwind)
-├── compose.yml          # Docker composition orchestrating the entire stack
+│   ├── Dockerfile.dev   # Development Dockerfile
+│   └── Dockerfile.prod  # Production Dockerfile (Node.js 24, Standalone)
+├── compose.yml          # Development Docker composition
+├── compose.prod.yml     # Production Docker composition
+├── nginx.conf           # Standalone Nginx reverse proxy configuration
 └── AGENTS.md            # This instruction file
 ```
 
 ### Backend
 - **Framework**: Django, Django Rest Framework (DRF)
-- **Language**: Python 3.12
+- **Language**: Python 3.14
 - **Package Manager**: UV
-- **Database**: PostgreSQL
+- **Production Server**: Gunicorn
+- **Database**: PostgreSQL 18
 
 ### Frontend
 - **Framework**: Next.js 16.2.0, React 19
 - **Language**: TypeScript
-- **Package Manager**: Bun
+- **Package Manager**: Bun (Dev/Build), Node.js 24 (Production Runtime)
 - **Styling**: Tailwind CSS v4
 
 ---
@@ -40,11 +47,11 @@ ERP/
 All commands should be executed via Docker to ensure parity with the containerized environment. Ensure the stack is running first using `docker compose up --build -d`.
 
 ### Docker Stack Management
-- **Start the stack**: `docker compose up --build -d`
-- **Stop the stack**: `docker compose down`
-- **Restart a service**: `docker compose restart backend` (useful if you modify configuration files or install new packages and they aren't immediately recognized)
+- **Start Development**: `docker compose up --build -d`
+- **Start Production**: `docker compose -f compose.prod.yml up --build -d`
+- **Stop Stack**: `docker compose down` (or `docker compose -f compose.prod.yml down`)
+- **Restart a service**: `docker compose restart backend`
 - **View logs**: `docker compose logs -f`
-- **View specific logs**: `docker compose logs -f backend`
 
 ### Backend Commands (run via Docker)
 - **Install Dependencies**: `docker compose exec backend uv sync`
