@@ -18,6 +18,12 @@ services:
       dockerfile: Dockerfile.prod
     env_file:
       - .env
+    volumes:
+      - ./staticfiles:/app/staticfiles
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - PYTHONUNBUFFERED=1
+      - TZ=Asia/Bangkok
     depends_on:
       db:
         condition: service_healthy
