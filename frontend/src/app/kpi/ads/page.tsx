@@ -19,12 +19,13 @@ interface AdPerformance {
 interface Campaign {
   campaign_id: string;
   campaign_name: string;
+  status: string;
 }
 
 export default async function AdPerformancePage() {
   const [performanceRaw, campaigns] = await Promise.all([
     api.getAll("/api/kpi/ad-performance/"),
-    api.getAll("/api/kpi/campaigns/") as Promise<Campaign[]>
+    api.getAll("/api/kpi/campaigns/?status=Active") as Promise<Campaign[]>
   ]);
 
   const performance = performanceRaw as AdPerformance[];

@@ -18,6 +18,13 @@ class MarketingCampaignViewSet(viewsets.ModelViewSet):
     serializer_class = MarketingCampaignSerializer
     permission_classes = [permissions.AllowAny]
 
+    def get_queryset(self):
+        queryset = MarketingCampaign.objects.all()
+        status = self.request.query_params.get("status")
+        if status:
+            queryset = queryset.filter(status=status)
+        return queryset
+
     @action(detail=True, methods=["get"])
     def campaign_kpis(self, request, pk=None):
         campaign = self.get_object()

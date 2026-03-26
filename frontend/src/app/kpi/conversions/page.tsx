@@ -20,12 +20,13 @@ interface Conversion {
 interface Campaign {
   campaign_id: string;
   campaign_name: string;
+  status: string;
 }
 
 export default async function ConversionsPage() {
   const [conversionsRaw, campaigns] = await Promise.all([
     api.getAll("/api/kpi/website-conversions/"),
-    api.getAll("/api/kpi/campaigns/") as Promise<Campaign[]>
+    api.getAll("/api/kpi/campaigns/?status=Active") as Promise<Campaign[]>
   ]);
 
   const conversions = conversionsRaw as Conversion[];
