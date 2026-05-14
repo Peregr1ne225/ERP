@@ -9,7 +9,7 @@
 const IS_SERVER = typeof window === "undefined";
 const BACKEND_URL = IS_SERVER
   ? process.env.BACKEND_API_URL || "http://backend:8000"
-  : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  : process.env.NEXT_PUBLIC_API_URL || "";
 
 interface ProxyOptions extends RequestInit {
   token?: string;

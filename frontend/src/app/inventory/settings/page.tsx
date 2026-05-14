@@ -50,7 +50,7 @@ export default function SettingsPage() {
         list_value: newListValue.trim()
       };
 
-      const res = await fetch("http://localhost:8000/api/inventory/dropdowns/", {
+      const res = await fetch("/api/inventory/dropdowns/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -80,7 +80,7 @@ export default function SettingsPage() {
     const id = deleteModal.id;
     setIsSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/inventory/dropdowns/${id}/`, {
+      const res = await fetch(`/api/inventory/dropdowns/${id}/`, {
         method: "DELETE"
       });
       if (!res.ok) throw new Error("Failed to delete dropdown value");

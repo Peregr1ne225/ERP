@@ -53,7 +53,7 @@ export default function EditTaskModal({ task, employees }: EditTaskModalProps) {
     };
 
     try {
-      const res = await fetch(`http://localhost:8000/api/project/tasks/${task.task_id}/`, {
+      const res = await fetch(`/api/project/tasks/${task.task_id}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

@@ -41,7 +41,7 @@ export default function EditCampaignModal({ campaign }: EditCampaignModalProps) 
     setError(null);
 
     try {
-      const res = await fetch(`http://localhost:8000/api/kpi/campaigns/${campaign.campaign_id}/`, {
+      const res = await fetch(`/api/kpi/campaigns/${campaign.campaign_id}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

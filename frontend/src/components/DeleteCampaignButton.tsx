@@ -18,7 +18,7 @@ export default function DeleteCampaignButton({ campaignId, campaignName, variant
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/kpi/campaigns/${campaignId}/`, {
+      const res = await fetch(`/api/kpi/campaigns/${campaignId}/`, {
         method: "DELETE",
       });
 

@@ -24,7 +24,7 @@ export default function AddEmployeeModal() {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:8000/api/project/employees/", {
+      const res = await fetch("/api/project/employees/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

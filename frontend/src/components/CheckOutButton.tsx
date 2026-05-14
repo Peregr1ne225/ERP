@@ -15,7 +15,7 @@ export default function CheckOutButton({ logId }: CheckOutButtonProps) {
     setLoading(true);
     try {
       const now = new Date().toISOString();
-      const res = await fetch(`http://localhost:8000/api/project/attendance-logs/${logId}/`, {
+      const res = await fetch(`/api/project/attendance-logs/${logId}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ check_out: now })

@@ -16,7 +16,7 @@ export default function DeleteConversionButton({ conversionId }: DeleteConversio
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/kpi/website-conversions/${conversionId}/`, {
+      const res = await fetch(`/api/kpi/website-conversions/${conversionId}/`, {
         method: "DELETE",
       });
 

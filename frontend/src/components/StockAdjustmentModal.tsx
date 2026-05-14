@@ -39,7 +39,7 @@ export default function StockAdjustmentModal({ sku_id, variant = "default" }: { 
         note: formData.note,
       };
 
-      const res = await fetch("http://localhost:8000/api/inventory/inventory-ledger/", {
+      const res = await fetch("/api/inventory/inventory-ledger/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

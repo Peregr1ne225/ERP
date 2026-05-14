@@ -18,7 +18,7 @@ export default function DeleteProductButton({ sku_id }: DeleteProductButtonProps
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`http://localhost:8000/api/inventory/products/${encodeURIComponent(sku_id)}/`, {
+      const res = await fetch(`/api/inventory/products/${encodeURIComponent(sku_id)}/`, {
         method: "DELETE",
       });
 

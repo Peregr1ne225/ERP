@@ -61,7 +61,7 @@ export default function AddProductModal() {
         color: formData.color,
       };
 
-      const pRes = await fetch("http://localhost:8000/api/inventory/products/", {
+      const pRes = await fetch("/api/inventory/products/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productPayload),
@@ -74,7 +74,7 @@ export default function AddProductModal() {
 
       // 2. Initialize Price History (Optional)
       if (formData.factory_cost || formData.retail_price) {
-        await fetch("http://localhost:8000/api/inventory/price-history/", {
+        await fetch("/api/inventory/price-history/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -88,7 +88,7 @@ export default function AddProductModal() {
 
       // 3. Initialize Stock (Optional)
       if (formData.initial_stock && parseInt(formData.initial_stock) > 0) {
-        await fetch("http://localhost:8000/api/inventory/inventory-ledger/", {
+        await fetch("/api/inventory/inventory-ledger/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

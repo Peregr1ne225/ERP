@@ -42,7 +42,7 @@ export default function PriceAdjustmentModal({ sku_id, currentFactoryCost, curre
         effective_date: formData.effective_date, // YYYY-MM-DD
       };
 
-      const res = await fetch("http://localhost:8000/api/inventory/price-history/", {
+      const res = await fetch("/api/inventory/price-history/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

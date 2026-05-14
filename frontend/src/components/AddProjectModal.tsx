@@ -22,7 +22,7 @@ export default function AddProjectModal() {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:8000/api/project/projects/", {
+      const res = await fetch("/api/project/projects/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

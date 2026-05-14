@@ -16,7 +16,7 @@ export default function DeleteTaskButton({ taskId }: DeleteTaskButtonProps) {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/project/tasks/${taskId}/`, {
+      const res = await fetch(`/api/project/tasks/${taskId}/`, {
         method: "DELETE",
       });
 

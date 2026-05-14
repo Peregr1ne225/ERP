@@ -38,7 +38,7 @@ export default function RecordAttendanceModal({ employees }: RecordAttendanceMod
     };
 
     try {
-      const res = await fetch("http://localhost:8000/api/project/attendance-logs/", {
+      const res = await fetch("/api/project/attendance-logs/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

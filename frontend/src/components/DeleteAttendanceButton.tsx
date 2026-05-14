@@ -16,7 +16,7 @@ export default function DeleteAttendanceButton({ logId }: DeleteAttendanceButton
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/project/attendance-logs/${logId}/`, {
+      const res = await fetch(`/api/project/attendance-logs/${logId}/`, {
         method: "DELETE",
       });
 

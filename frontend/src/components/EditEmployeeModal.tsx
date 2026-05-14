@@ -36,7 +36,7 @@ export default function EditEmployeeModal({ employee }: EditEmployeeModalProps) 
     setError(null);
 
     try {
-      const res = await fetch(`http://localhost:8000/api/project/employees/${employee.employee_id}/`, {
+      const res = await fetch(`/api/project/employees/${employee.employee_id}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

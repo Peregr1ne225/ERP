@@ -26,7 +26,7 @@ export default function UpdateProjectStatusModal({ projectId, currentStatus }: U
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`http://localhost:8000/api/project/projects/${projectId}/`, {
+      const res = await fetch(`/api/project/projects/${projectId}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),

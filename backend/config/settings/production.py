@@ -9,7 +9,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["backend", "localhost"])
 
 # Secure Proxy SSL Header
 # This is needed if the app is behind a load balancer that handles SSL
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # CORS settings for production
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])

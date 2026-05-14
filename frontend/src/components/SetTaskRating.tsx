@@ -17,7 +17,7 @@ export default function SetTaskRating({ taskId, currentRating }: SetTaskRatingPr
   const handleSetRating = async (val: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/project/tasks/${taskId}/`, {
+      const res = await fetch(`/api/project/tasks/${taskId}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rating: val }),
